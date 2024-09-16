@@ -13,6 +13,7 @@ class Game{
         this.username = username
         this.oppoid = undefined
         this.winner = false
+        this.roomOwner = userid
         this.turn = true
         this.gameStart =false
         this.oppoUsername = undefined
@@ -20,8 +21,10 @@ class Game{
         this.combinations = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2,4, 6]]
         this.gameId = gameId
         this.firstWeapon = "X"
-        this.secondWeapon = "Y"
+        this.secondWeapon = "O"
         this.timeoutID = null;
+        this.winningCombo = null
+        this.winnerid = null
     }
 
     deleteSelf(games, delay) {
@@ -48,11 +51,12 @@ class Game{
     }
 
     inputs(inputid,input,pos){
-        console.log(this.turn,this.firstWeapon,this.secondWeapon,typeof pos)
+
         if(this.turn == this.firstWeapon && inputid == this.userid){
             if(this.box[pos] == ""){
                 this.box[pos] = input
-                this.turn = this.turn == "X"?"Y":"X"
+                this.turn = this.turn == "X"?"O":"X"
+                this.checkWinner()
                 return true
             }else{
                 return "Click On Empty Box"
@@ -60,8 +64,9 @@ class Game{
         }
         if(this.turn == this.secondWeapon && inputid == this.oppoid){
             if(this.box[pos] == ""){
-                this.turn = this.turn == "X"?"Y":"X"
+                this.turn = this.turn == "X"?"O":"X"
                 this.box[pos] = input
+                this.checkWinner()
                 return true
             }else{
                 return "Click On Empty Box"
@@ -75,16 +80,20 @@ class Game{
     checkWinner(){
         for(let combination of this.combinations){
             let [a,b,c]  = combination
-            if(this.box[a] && this.box[a] == this.box[c]&& this.box[a] == this.box[c]){
+            if(this.box[a] && this.box[a] == this.box[b]&& this.box[a] == this.box[c]){
                 if(this.box[a]== this.firstWeapon){
-                    return this.username +" Is Winner"
+                    this.winner = true
+                    this.winningCombo = [a,b,c]
+                    this.winnerid =  this.username + "Is Winner"
                 }else{
-                    return this.oppoUsername +" Is Winner"
+                    this.winner = true
+                    this.winningCombo = [a,b,c]
+                    this.winnerid =  this.oppoUsername + "Is Winner"
                 }
             }
         }
         if(!this.box.includes("")){
-            return "Draw"
+            this.winnerid =  "Draw"
         }
     }
     

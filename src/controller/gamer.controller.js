@@ -31,17 +31,21 @@ const joinRoom = async(req,res)=>{
         return res.status(401).json({message:"Invalid Or Expired Room Id"})
     }
     const roomData = await games[gameId].initGame(userid,username)
-    const {winner,turn,box,firstWeapon,secondWeapon} = roomData
-    return res.status(200).json({winner,turn,box,firstWeapon,secondWeapon,userid})
+    const firstPlayer = games[gameId].userid
+    const socketid = getUserStatus(firstPlayer)
+    const  {winner,turn,box,firstWeapon,secondWeapon,oppoid,winnerid,winningCombo,roomOwner} = roomData
+    io.to(socketid).emit("gameData",{winner,turn,box,winnerid,oppoid,firstWeapon,secondWeapon,winningCombo,roomOwner});
+    return res.status(200).json({winner,turn,box,winnerid,userid,firstWeapon,secondWeapon,winningCombo,username,gameId,roomOwner})
 
 
 }
 
 const inputHandler = async(req,res)=>{
     const {inputid,pos,gameId} = req.body
-    if(!inputid || !pos){
-        return res.status(404).json({message:"Inputs Are Required"})
-    }
+    console.log(inputid,pos,gameId)
+    // if(!inputid || !pos){
+    //     return res.status(404).json({message:"Inputs Are Required"})
+    // }
     if(!games.hasOwnProperty(gameId)){
         return res.status(401).json({message:"Invalid Or Expired Room"})
     }
@@ -63,14 +67,15 @@ const inputHandler = async(req,res)=>{
        Data= userGame.inputs(inputid,userGame.secondWeapon,pos)
     }
 
-    const {winner,turn,box,firstWeapon,secondWeapon} = games[gameId]
-
+    const {winner,turn,box,firstWeapon,secondWeapon,roomOwner,userid,oppoid,winnerid,winningCombo} = games[gameId]
+    const username1 = games[gameId].username
+    const username2 = games[gameId].oppoUsername
     if(Data === true){
-    io.to(socketid).emit("gameData",{winner,turn,box,firstWeapon,secondWeapon});
-    io.to(socketid2).emit("gameData",{winner,turn,box,firstWeapon,secondWeapon});
+    io.to(socketid).emit("gameData",{winner,turn,box,firstWeapon,secondWeapon,userid,gameId,winnerid,winningCombo,userName:username1,roomOwner});
+    io.to(socketid2).emit("gameData",{winner,turn,box,firstWeapon,secondWeapon,userid:oppoid,gameId,winnerid,winningCombo,userName:username2,roomOwner});
     }
 
-    res.status(200).json(Data)
+    res.status(200).json("Opponent Turn");
 }
 
 export{createRoom,joinRoom,inputHandler}

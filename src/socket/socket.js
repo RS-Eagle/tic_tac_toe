@@ -8,7 +8,7 @@ const server = http.createServer(app)
 const io =  new Server(server,
     {
         cors: {
-            origin: ["http://localhost:3000"],
+            origin: ["http://localhost:3000","http://localhost:4000"],
             methods: ["GET", "POST"],
         },
 })
@@ -23,7 +23,7 @@ export const getUserStatus = (id)=>{
 io.on("connection",(socket)=>{
     console.log("New Connection",socket.id,socket.handshake.query.userid)
     const {userid} = socket.handshake.query
-    if(userid != "undefined"){
+    if(userid != undefined){
         userConnected[userid] = socket.id
     }
     
@@ -31,7 +31,6 @@ io.on("connection",(socket)=>{
     socket.on("disconnect",()=>{
         console.log("Disconnected",userid)
         delete userConnected[userid]
-        console.log(userConnected)
     })
 })
 
