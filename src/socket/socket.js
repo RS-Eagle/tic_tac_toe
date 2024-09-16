@@ -9,7 +9,7 @@ const io =  new Server(server,
     {
         cors: {
             origin: ["http://localhost:3000","http://localhost:4000","https://radiant-licorice-1e2e2f.netlify.app"],
-            methods: ["GET", "POST"],
+            methods: ["GET", "POST"], 
         },
 })
 
