@@ -84,11 +84,11 @@ class Game{
                 if(this.box[a]== this.firstWeapon){
                     this.winner = true
                     this.winningCombo = [a,b,c]
-                    this.winnerid =  this.username + "Is Winner"
+                    this.winnerid =  this.username + " is Winner"
                 }else{
                     this.winner = true
                     this.winningCombo = [a,b,c]
-                    this.winnerid =  this.oppoUsername + "Is Winner"
+                    this.winnerid =  this.oppoUsername + " is Winner"
                 }
             }
         }
