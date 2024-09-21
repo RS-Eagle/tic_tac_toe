@@ -93,6 +93,8 @@ class Game{
             }
         }
         if(!this.box.includes("")){
+            this.winner = true
+            this.winnerid =  "Draw"
             this.winnerid =  "Draw"
         }
     }
